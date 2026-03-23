@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUX WEAR</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-black">
+
+<!-- HEADER -->
+<header class="flex flex-wrap justify-between items-center px-4 md:px-20 py-4 bg-white shadow gap-4">
+
+  <h1 class="text-lg md:text-xl font-bold tracking-widest">LUX WEAR</h1>
+
+  <input id="search" oninput="searchProducts()" 
+    placeholder="Поиск..."
+    class="border px-3 py-2 rounded w-full md:w-64">
+
+  <button onclick="toggleCart()" class="bg-black text-white px-4 py-2 rounded">
+    🛒 (<span id="count">0</span>)
+  </button>
+
+</header>
+
+<!-- HERO -->
+<section class="text-center py-12 md:py-20 bg-black text-white px-4">
+  <h1 class="text-3xl md:text-5xl font-bold mb-4">NEW COLLECTION</h1>
+  <p class="text-gray-300 text-sm md:text-base">Стиль как у брендов</p>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" class="px-4 md:px-20 py-10 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-10">
+
+  <div class="product bg-white p-3 md:p-4 rounded-xl shadow">
+    <img src="https://source.unsplash.com/400x400/?tshirt" class="rounded mb-2">
+    <h2 class="font-bold text-sm md:text-base">Футболка</h2>
+    <p class="text-sm">199000</p>
+    <button onclick="add('Футболка',199000)" class="mt-2 w-full bg-black text-white py-1 md:py-2 rounded text-sm">
+      В корзину
+    </button>
+  </div>
+
+  <div class="product bg-white p-3 md:p-4 rounded-xl shadow">
+    <img src="https://source.unsplash.com/400x400/?hoodie" class="rounded mb-2">
+    <h2 class="font-bold text-sm md:text-base">Худи</h2>
+    <p class="text-sm">299000</p>
+    <button onclick="add('Худи',299000)" class="mt-2 w-full bg-black text-white py-1 md:py-2 rounded text-sm">
+      В корзину
+    </button>
+  </div>
+
+  <div class="product bg-white p-3 md:p-4 rounded-xl shadow">
+    <img src="https://source.unsplash.com/400x400/?jacket" class="rounded mb-2">
+    <h2 class="font-bold text-sm md:text-base">Куртка</h2>
+    <p class="text-sm">499000</p>
+    <button onclick="add('Куртка',499000)" class="mt-2 w-full bg-black text-white py-1 md:py-2 rounded text-sm">
+      В корзину
+    </button>
+  </div>
+
+  <div class="product bg-white p-3 md:p-4 rounded-xl shadow">
+    <img src="https://source.unsplash.com/400x400/?jeans" class="rounded mb-2">
+    <h2 class="font-bold text-sm md:text-base">Джинсы</h2>
+    <p class="text-sm">399000</p>
+    <button onclick="add('Джинсы',399000)" class="mt-2 w-full bg-black text-white py-1 md:py-2 rounded text-sm">
+      В корзину
+    </button>
+  </div>
+
+</section>
+
+<!-- CART -->
+<div id="cart" class="fixed right-0 top-0 w-full md:w-80 h-full bg-white shadow-xl p-5 hidden overflow-y-auto">
+
+  <h2 class="text-xl font-bold mb-4">Корзина</h2>
+  <ul id="items" class="space-y-2"></ul>
+
+  <p class="mt-4 font-bold">Итого: <span id="total">0</span></p>
+
+  <a id="order" target="_blank"
+     class="block mt-4 text-center bg-blue-500 text-white py-2 rounded">
+     Заказать в Telegram
+  </a>
+
+</div>
+
+<script>
+let cart = [];
+
+function add(name, price){
+  let item = cart.find(i => i.name === name);
+  if(item){
+    item.qty++;
+  } else {
+    cart.push({name, price, qty:1});
+  }
+  update();
+}
+
+function remove(index){
+  cart.splice(index,1);
+  update();
+}
+
+function update(){
+  let list = document.getElementById("items");
+  let total = 0;
+  list.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    total += item.price * item.qty;
+    list.innerHTML += `
+      <li class="flex justify-between items-center">
+        <span>${item.name} x${item.qty}</span>
+        <button onclick="remove(${i})" class="text-red-500">✖</button>
+      </li>
+    `;
+  });
+
+  document.getElementById("total").innerText = total;
+  document.getElementById("count").innerText = cart.length;
+
+  let text = cart.map(i => i.name + " x" + i.qty).join(", ");
+  document.getElementById("order").href =
+    `https://t.me/Muxammad_azim?text=${encodeURIComponent("Заказ: " + text)}`;
+}
+
+function toggleCart(){
+  document.getElementById("cart").classList.toggle("hidden");
+}
+
+function searchProducts(){
+  let input = document.getElementById("search").value.toLowerCase();
+  let products = document.querySelectorAll(".product");
+
+  products.forEach(p => {
+    let name = p.innerText.toLowerCase();
+    p.style.display = name.includes(input) ? "block" : "none";
+  });
+}
+</script>
+
+</body>
+</html>
